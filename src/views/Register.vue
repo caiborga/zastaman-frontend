@@ -35,6 +35,7 @@ import Button from "primevue/button";
 import { useRouter } from "vue-router";
 import { useLoadingStore } from "../stores/loading";
 import { useToastStore } from "../stores/toast";
+import { api } from "../api";
 
 const router = useRouter();
 const loading = useLoadingStore();
@@ -51,8 +52,7 @@ async function register() {
 	error.value = "";
 	try {
 		loading.show();
-		await axios.post("/api/auth/register", form.value);
-        toastStore.showToast("Dies ist eine Nachricht");
+		await api.post("/auth/register", form.value);
 		router.push("/auth/login");
 	} catch (err: any) {
 		error.value =

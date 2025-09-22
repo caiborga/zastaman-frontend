@@ -52,6 +52,7 @@ import Password from "primevue/password";
 import Button from "primevue/button";
 import { useRouter } from "vue-router";
 import { useLoadingStore } from "../stores/loading";
+import { api } from "../api";
 
 const router = useRouter();
 const loading = useLoadingStore();
@@ -67,7 +68,7 @@ async function login() {
 	error.value = "";
 	try {
 		loading.show();
-		const res = await axios.post("/api/auth/login", form.value);
+		const res = await api.post("/auth/login", form.value);
 
 		// Token speichern
 		localStorage.setItem("token", res.data.access_token);

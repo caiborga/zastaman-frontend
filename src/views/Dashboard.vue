@@ -1,24 +1,40 @@
 <template>
-	<div class="max-w-4xl mx-auto p-6">
+	<div
+		class="mx-auto max-w-screen-lg p-4 sm:p-6 pt-[env(safe-area-inset-top)]"
+	>
+		<!-- Info-Banner: nicht absolute, gut klickbar, sticky auf Mobile -->
 		<Message
-			closable
 			v-if="!hasBiller"
-			class="absolute top-4 left-[25%] w-[50%] z-50 shadow-lg bg-white border border-gray-200 p-4 rounded-lg"
+			closable
+			class="sticky z-20 mb-4 shadow-lg bg-white border border-gray-200 p-3 sm:p-4 rounded-lg"
+			role="status"
+			aria-live="polite"
 		>
-			Du hast noch keine Stammdaten hinterlegt. Bitte gehe zu
-			<router-link to="/biller" class="text-blue-600 underline">
-				Einstellungen
-			</router-link>
-			, um deine Firmendaten anzulegen.
+			<div class="text-sm sm:text-base">
+				Du hast noch keine Stammdaten hinterlegt. Bitte gehe zu
+				<router-link
+					to="/biller"
+					class="inline-flex items-center text-blue-600 underline underline-offset-2 font-medium ml-1"
+				>
+					Einstellungen
+				</router-link>
+				, um deine Firmendaten anzulegen.
+			</div>
 		</Message>
-		<h1 class="text-2xl font-bold mb-4">Dashboard</h1>
 
-		<!-- CARDS LINE 1 -->
-		<div class="flex gap-4 m-2">
-			<Card class="w-3/4 overflow-hidden">
-				<template #title>Umsatz (netto)</template>
+		<h1 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Dashboard</h1>
+
+		<!-- KPIs: responsives Grid -->
+		<div
+			class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4"
+		>
+			<!-- NETTO -->
+			<Card class="overflow-hidden">
+				<template #title>
+					<div class="text-sm sm:text-base">Umsatz (netto)</div>
+				</template>
 				<template #content>
-					<p class="m-0 text-3xl">
+					<p class="m-0 text-2xl sm:text-3xl leading-tight">
 						{{
 							new Intl.NumberFormat("de-DE", {
 								style: "currency",
@@ -29,11 +45,13 @@
 				</template>
 			</Card>
 
-			<!-- VAT -->
-			<Card class="w-3/4 overflow-hidden">
-				<template #title>Umsatzsteuer</template>
+			<!-- UST -->
+			<Card class="overflow-hidden">
+				<template #title>
+					<div class="text-sm sm:text-base">Umsatzsteuer</div>
+				</template>
 				<template #content>
-					<p class="m-0 text-3xl">
+					<p class="m-0 text-2xl sm:text-3xl leading-tight">
 						{{
 							new Intl.NumberFormat("de-DE", {
 								style: "currency",
@@ -43,11 +61,16 @@
 					</p>
 				</template>
 			</Card>
-			<!-- NET -->
-			<Card class="w-3/4 overflow-hidden">
-				<template #title>Umsatz (brutto)</template>
+
+			<!-- BRUTTO -->
+			<Card
+				class="overflow-hidden lg:col-span-1 sm:col-span-2 lg:col-span-1"
+			>
+				<template #title>
+					<div class="text-sm sm:text-base">Umsatz (brutto)</div>
+				</template>
 				<template #content>
-					<p class="m-0 text-3xl">
+					<p class="m-0 text-2xl sm:text-3xl leading-tight">
 						{{
 							new Intl.NumberFormat("de-DE", {
 								style: "currency",
@@ -58,51 +81,41 @@
 				</template>
 			</Card>
 		</div>
-		<!-- CARDS LINE 2 -->
-		<div class="flex gap-4 m-2">
-			<Card class="w-1/2 overflow-hidden">
-				<template #title>Erstellte Rechnungen</template>
+
+		<!-- Zweite Reihe -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+			<Card class="overflow-hidden">
+				<template #title>
+					<div class="text-sm sm:text-base">Erstellte Rechnungen</div>
+				</template>
 				<template #content>
-					<p class="m-0 text-3xl">
+					<p class="m-0 text-2xl sm:text-3xl leading-tight">
 						{{ dashboardData.count }}
 					</p>
 				</template>
 			</Card>
-
-			<!-- <Card class="w-3/4 overflow-hidden">
-				<template #title>Umsatzsteuer</template>
-				<template #content>
-					<p class="m-0 text-3xl">
-						{{
-							dashboardData.cu
-						}}
-					</p>
-				</template>
-			</Card> -->
-			<!-- NET -->
-			<!-- <Card class="w-3/4 overflow-hidden">
-				<template #title>Umsatz (brutto)</template>
-				<template #content>
-					<p class="m-0 text-3xl">
-						{{
-							new Intl.NumberFormat("de-DE", {
-								style: "currency",
-								currency: "EUR"
-							}).format(dashboardData.totalGross || 0)
-						}}
-					</p>
-				</template>
-			</Card> -->
 		</div>
 
-		<div class="bg-white rounded shadow p-4">
-			<h2 class="text-lg font-semibold mb-3">Kundenumsätze</h2>
-			<Chart
-				type="bar"
-				:data="chartData"
-				:options="chartOptions"
-				class="h-[30rem]"
-			/>
+		<!-- Chart: auf Mobile horizontales Scrollen statt zu quetschen -->
+		<div class="bg-white rounded-lg shadow p-3 sm:p-4 m-0" v-if="chartData">
+			<div class="flex items-center justify-between gap-2 mb-2">
+				<h2 class="text-base sm:text-lg font-semibold">
+					Kundenumsätze
+				</h2>
+			</div>
+
+			<!-- WICHTIG: kein min-width mehr; Container begrenzt Breite -->
+			<div class="relative w-full overflow-hidden">
+				<!-- Aspect-ratio Wrapper: 16:9 auf Mobile, 21:9 ab sm -->
+
+				<!-- Chart -->
+				<Chart
+					type="bar"
+					:data="chartData"
+					:options="chartOptions"
+					class="absolute inset-0 !w-full !h-full block"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -134,6 +147,7 @@ let biller: Biller = {
 
 const chartData = ref();
 const chartOptions = ref();
+
 const dashboardData = ref<DashboardData>({
 	count: 0,
 	totalGross: 0,
@@ -175,7 +189,7 @@ const setChartData = (data: DashboardData) => {
 				type: "bar",
 				label: "Nettobetrag",
 				backgroundColor: documentStyle.getPropertyValue("--p-gray-500"),
-				data: data.monthsTotals,
+				data: data.monthsTotals
 			},
 			{
 				type: "bar",

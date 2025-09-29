@@ -1,54 +1,63 @@
 <template>
-	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow mt-2">
 		<h2 class="text-xl font-bold mb-4">Stammdaten</h2>
 
 		<form @submit.prevent="editBiller" class="space-y-4">
-			<div class="flex gap-4">
-				<div class="flex-1">
+			<!-- NAME -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Vorname *</label>
 					<InputText v-model="biller.preName" class="w-full" />
 				</div>
-				<div class="flex-1">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Nachname *</label>
 					<InputText v-model="biller.lastName" class="w-full" />
 				</div>
 			</div>
 
+			<!-- ORG -->
 			<div>
 				<label class="block mb-1">Unternehmen</label>
 				<InputText v-model="biller.companyName" class="w-full" />
 			</div>
 
-			<div class="flex gap-4">
-				<div class="flex-1">
+			<!-- STREET / NUMBER (3:1) -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="min-w-0 sm:flex-[3]">
 					<label class="block mb-1">Straße *</label>
 					<InputText v-model="biller.street" class="w-full" />
 				</div>
-				<div class="flex-1">
+
+				<div class="min-w-0 sm:flex-[1]">
 					<label class="block mb-1">Hausnummer *</label>
 					<InputNumber
 						v-model="biller.streetNumber"
-						class="w-full"
+						class="block w-full max-w-full"
+						inputClass="w-full"
 						:min="0"
 					/>
 				</div>
 			</div>
 
-			<div class="flex-1">
-				<label class="block mb-1">Postleitzahl *</label>
-				<InputText v-model="biller.postcode" class="w-full" />
+			<!-- PLZ / TOWN -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="sm:w-48 min-w-0">
+					<label class="block mb-1">Postleitzahl *</label>
+					<InputText v-model="biller.postcode" class="w-full" />
+				</div>
+				<div class="flex-1 min-w-0">
+					<label class="block mb-1">Stadt *</label>
+					<InputText v-model="biller.town" class="w-full" />
+				</div>
 			</div>
 
-			<div>
-				<label class="block mb-1">Stadt *</label>
-				<InputText v-model="biller.town" class="w-full" />
-			</div>
-
+			<!-- COUNTRY -->
 			<div>
 				<label class="block mb-1">Land *</label>
 				<InputText v-model="biller.country" class="w-full" />
 			</div>
 
+			<!-- ERROR / STATUS -->
 			<div
 				v-if="errors.length"
 				class="bg-red-50 border border-red-400 text-red-700 p-3 rounded space-y-1"
@@ -137,13 +146,21 @@ async function editBiller() {
 	try {
 		await api.patch("/biller", {
 			...biller.value,
-			postcode: convertToNumber(biller.value.postcode),
+			postcode: convertToNumber(biller.value.postcode)
 		});
 		success.value = "Stammdaten erfolgreich gespeichert.";
-        toastStore.showToast("Stammdaten erfolgreich gespeichert", "success", "Erfolgreich");
+		toastStore.showToast(
+			"Stammdaten erfolgreich gespeichert",
+			"success",
+			"Erfolgreich"
+		);
 		menu.disable("customers", false);
 	} catch (err: any) {
-        toastStore.showToast("Es ist ein Fehler aufgetreten", "error", "Fehler");
+		toastStore.showToast(
+			"Es ist ein Fehler aufgetreten",
+			"error",
+			"Fehler"
+		);
 	} finally {
 		loading.hide();
 	}
@@ -158,7 +175,7 @@ async function loadBiller() {
 			typeof res.data === "object" &&
 			!Array.isArray(res.data)
 		) {
-			biller.value = {...res.data, postcode: String(res.data.postcode)};
+			biller.value = { ...res.data, postcode: String(res.data.postcode) };
 		} else {
 			biller.value = { ...emptyBiller };
 		}
@@ -171,8 +188,8 @@ async function loadBiller() {
 }
 
 function convertToNumber(value: string): number {
-    console.log(value ? Number(value) : 0)
-  return value ? Number(value) : 0;
+	console.log(value ? Number(value) : 0);
+	return value ? Number(value) : 0;
 }
 
 onMounted(() => {

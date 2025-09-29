@@ -2,11 +2,11 @@
 	<div
 		class="mx-auto max-w-screen-lg p-4 sm:p-6 pt-[env(safe-area-inset-top)]"
 	>
-		<!-- Info-Banner: nicht absolute, gut klickbar, sticky auf Mobile -->
+		<!-- INFO -->
 		<Message
 			v-if="!hasBiller"
 			closable
-			class="sticky z-20 mb-4 shadow-lg bg-white border border-gray-200 p-3 sm:p-4 rounded-lg"
+			class="sticky z-20 mb-4 shadow-lg bg-white border border-gray-200 p-3 sm:p-4 rounded-lg mt-2"
 			role="status"
 			aria-live="polite"
 		>
@@ -22,13 +22,15 @@
 			</div>
 		</Message>
 
-		<h1 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Dashboard</h1>
+		<h1 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 my-4">
+			Dashboard
+		</h1>
 
-		<!-- KPIs: responsives Grid -->
+		<!-- KPIs FIRST ROW-->
 		<div
 			class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4"
 		>
-			<!-- NETTO -->
+			<!-- NET -->
 			<Card class="overflow-hidden">
 				<template #title>
 					<div class="text-sm sm:text-base">Umsatz (netto)</div>
@@ -45,7 +47,7 @@
 				</template>
 			</Card>
 
-			<!-- UST -->
+			<!-- VAT -->
 			<Card class="overflow-hidden">
 				<template #title>
 					<div class="text-sm sm:text-base">Umsatzsteuer</div>
@@ -62,7 +64,7 @@
 				</template>
 			</Card>
 
-			<!-- BRUTTO -->
+			<!-- GROSS -->
 			<Card
 				class="overflow-hidden lg:col-span-1 sm:col-span-2 lg:col-span-1"
 			>
@@ -82,8 +84,9 @@
 			</Card>
 		</div>
 
-		<!-- Zweite Reihe -->
+		<!-- KPIs SECOND ROW-->
 		<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+            <!-- INVOICES -->
 			<Card class="overflow-hidden">
 				<template #title>
 					<div class="text-sm sm:text-base">Erstellte Rechnungen</div>
@@ -96,7 +99,7 @@
 			</Card>
 		</div>
 
-		<!-- Chart: auf Mobile horizontales Scrollen statt zu quetschen -->
+		<!-- CHART-->
 		<div class="bg-white rounded-lg shadow p-3 sm:p-4 m-0" v-if="chartData">
 			<div class="flex items-center justify-between gap-2 mb-2">
 				<h2 class="text-base sm:text-lg font-semibold">
@@ -104,16 +107,13 @@
 				</h2>
 			</div>
 
-			<!-- WICHTIG: kein min-width mehr; Container begrenzt Breite -->
 			<div class="relative w-full overflow-hidden">
-				<!-- Aspect-ratio Wrapper: 16:9 auf Mobile, 21:9 ab sm -->
-
 				<!-- Chart -->
 				<Chart
 					type="bar"
 					:data="chartData"
 					:options="chartOptions"
-					class="absolute inset-0 !w-full !h-full block"
+					class="absolute inset-0 block"
 				/>
 			</div>
 		</div>

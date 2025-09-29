@@ -4,6 +4,7 @@
 
 		<form @submit.prevent="submitBiller" class="space-y-4">
 			<div class="flex gap-4">
+				<!-- NAME -->
 				<div class="flex-1">
 					<label>Vorname</label>
 					<InputText v-model="customer.preName" class="w-full" />
@@ -14,16 +15,19 @@
 					<InputText v-model="customer.lastName" class="w-full" />
 				</div>
 			</div>
-            <div>
-					<label>Unternehmen</label>
-					<InputText v-model="customer.companyName" class="w-full" />
-				</div>
+			<!-- ORGANIZATION -->
+			<div>
+				<label>Unternehmen</label>
+				<InputText v-model="customer.companyName" class="w-full" />
+			</div>
 			<div class="flex gap-4">
+				<!-- STREET -->
+
 				<div class="flex-1">
 					<label>Strasse</label>
 					<InputText v-model="customer.street" class="w-full" />
 				</div>
-
+				<!-- NUMBER -->
 				<div class="flex-1">
 					<label>Hausnummer</label>
 					<InputNumber
@@ -32,17 +36,19 @@
 					/>
 				</div>
 			</div>
-
+			<!-- PLZ -->
 			<div class="flex-1">
 				<label>Postleitzahl</label>
 				<InputNumber v-model="customer.postcode" class="w-full" />
 			</div>
 
+            <!-- TOWN -->
 			<div>
 				<label>Stadt</label>
 				<InputText v-model="customer.town" class="w-full" />
 			</div>
 
+            <!-- COUNTRY -->
 			<div>
 				<label>Land</label>
 				<InputText v-model="customer.country" class="w-full" />
@@ -74,7 +80,7 @@ const customer = ref({
 	streetNumber: null,
 	postcode: null,
 	town: "",
-	country: "",
+	country: ""
 });
 
 const error = ref("");
@@ -91,10 +97,11 @@ async function submitBiller() {
 			...customer.value
 		});
 		success.value = "Stammdaten erfolgreich angelegt.";
-        await billerStore.fetchBiller()
+		await billerStore.fetchBiller();
 	} catch (err: any) {
 		error.value =
-			err.response?.data?.message || "Fehler beim Speichern der Stammdaten.";
+			err.response?.data?.message ||
+			"Fehler beim Speichern der Stammdaten.";
 	} finally {
 		loading.hide();
 	}

@@ -60,9 +60,36 @@ onMounted(() => {
 <style scoped>
 .main-layout {
 	display: flex;
-	min-height: 100vh;
+	min-height: 100svh;
+	background: radial-gradient(
+			800px 500px at 100% 0%,
+			rgba(99, 102, 241, 0.18) 0,
+			rgba(99, 102, 241, 0) 55%
+		),
+		radial-gradient(
+			600px 400px at 0% 0%,
+			rgba(56, 189, 248, 0.18) 0,
+			rgba(56, 189, 248, 0) 60%
+		),
+		linear-gradient(180deg, #f8fafc 0%, #eef2ff 60%, #ffffff 100%);
 }
 .page-content {
 	flex: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+	.main-layout {
+		background: radial-gradient(
+				800px 500px at 100% 0%,
+				rgba(99, 102, 241, 0.25) 0,
+				rgba(99, 102, 241, 0) 55%
+			),
+			radial-gradient(
+				600px 400px at 0% 0%,
+				rgba(56, 189, 248, 0.22) 0,
+				rgba(56, 189, 248, 0) 60%
+			),
+			linear-gradient(180deg, #0f172a 0%, #111827 60%, #0b1220 100%);
+	}
 }
 </style>

@@ -1,43 +1,106 @@
 <template>
-	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow mt-2">
 		<div class="flex items-center justify-between mb-4">
 			<h2 class="text-xl font-bold">Umsatzsteuersätze</h2>
-			<Button icon="pi pi-plus" size="small" @click="openNewDialog" />
+			<Button
+				icon="pi pi-plus"
+				rounded
+				size="small"
+				aria-label="Neuer Steuersatz"
+				@click="openNewDialog"
+			/>
 		</div>
 
-		<DataTable
-			:value="vatRates"
-			:paginator="true"
-			:rows="10"
-			stripedRows
-			responsiveLayout="scroll"
-			@row-click="editData($event)"
-		>
-			<template #empty>
-				Bisher wurden keine Steuersätze
-				<span @click="openNewDialog" class="text-blue-600 underline"
-					>erstellt</span
-				>.</template
+		<div class="min-w-0">
+			<div
+				class="overflow-x-auto max-w-full rounded-lg bg-white shadow ring-1 ring-gray-200"
 			>
-			<Column
-				class="cursor-pointer"
-				field="percentage"
-				header="Steuersatz"
-			/>
-			<Column
-				class="cursor-pointer"
-				field="description"
-				header="Beschreibung"
-			/>
-			<Column class="cursor-pointer" field="isDefault" header="Standard">
-				<template #body="slotProps">
-					<i
-						v-if="slotProps.data.isDefault"
-						class="pi pi-check text-green-600"
-					></i>
-				</template>
-			</Column>
-		</DataTable>
+				<DataTable
+					:value="vatRates"
+					:paginator="true"
+					:rows="10"
+					stripedRows
+					responsiveLayout="stack"
+					breakpoint="768px"
+					scrollable
+					scrollDirection="horizontal"
+					:tableStyle="{ width: '100%', tableLayout: 'auto' }"
+					class="w-full text-sm"
+					@row-click="editData($event)"
+					:rowClass="() => 'cursor-pointer'"
+				>
+					<template #empty>
+						Bisher wurden keine Steuersätze
+						<span
+							@click="openNewDialog"
+							class="text-blue-600 underline cursor-pointer"
+							>erstellt</span
+						>.
+					</template>
+
+					<!-- Steuersatz: Hauptspalte, zeigt auf XS auch Beschreibung + Standard-Badge -->
+					<Column header="Steuersatz">
+						<template #body="{ data }">
+							<span class="p-column-title sm:hidden"
+								>Steuersatz</span
+							>
+							<div class="font-medium">
+								{{
+									new Intl.NumberFormat("de-DE", {
+										maximumFractionDigits: 2
+									}).format(data.percentage)
+								}}
+								%
+							</div>
+
+							<!-- Beschreibung & Standard-Badge nur auf XS als Subtext -->
+							<div class="text-gray-500 sm:hidden">
+								{{ data.description }}
+							</div>
+							<div
+								v-if="data.isDefault"
+								class="sm:hidden mt-1 inline-flex items-center gap-1 text-emerald-700 text-xs font-medium bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded"
+							>
+								<i class="pi pi-check"></i> Standard
+							</div>
+						</template>
+					</Column>
+
+					<!-- Beschreibung: nur ≥ sm -->
+					<Column
+						field="description"
+						header="Beschreibung"
+						:headerClass="'hidden sm:table-cell'"
+						:bodyClass="'hidden sm:table-cell'"
+					>
+						<template #body="{ data }">
+							<div
+								class="max-w-[360px] truncate"
+								:title="data.description"
+							>
+								{{ data.description }}
+							</div>
+						</template>
+					</Column>
+
+					<!-- Standard: nur ≥ sm -->
+					<Column
+						field="isDefault"
+						header="Standard"
+						:headerClass="'hidden sm:table-cell'"
+						:bodyClass="'hidden sm:table-cell'"
+					>
+						<template #body="{ data }">
+							<i
+								v-if="data.isDefault"
+								class="pi pi-check text-green-600"
+								aria-label="Standard"
+							></i>
+						</template>
+					</Column>
+				</DataTable>
+			</div>
+		</div>
 
 		<Dialog
 			v-model:visible="visible"

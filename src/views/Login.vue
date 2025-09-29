@@ -3,13 +3,13 @@
 		class="max-w-4xl mx-auto p-6 bg-white rounded shadow flex flex-col md:flex-row"
 	>
 		<!-- Image -->
-		<div class="flex-1 p-6 hidden md:block">
+		<!-- <div class="flex-1 p-6 hidden md:block">
 			<img
 				src="/src/assets/zasta-man.png"
 				alt="Login Illustration"
 				class="w-54 h-96 object-cover rounded"
 			/>
-		</div>
+		</div> -->
 		<!-- Login Form -->
 		<div class="flex-1 p-6">
 			<h2 class="text-xl font-bold mb-4">Login</h2>
@@ -46,7 +46,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import axios from "axios";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
 import Button from "primevue/button";

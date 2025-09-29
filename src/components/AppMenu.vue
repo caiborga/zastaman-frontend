@@ -3,7 +3,6 @@
     <template #end>
       <button @click="logout" class="p-button p-button-text logout-button">
         <i class="pi pi-sign-out" />
-        <span class="ml-2">Logout</span>
       </button>
     </template>
   </Menubar>
@@ -17,13 +16,12 @@ import { useMenuStore } from "../stores/menu";
 const router = useRouter();
 const menuStore = useMenuStore();
 
-// Logout-Funktion
 const logout = () => {
   localStorage.removeItem("token");
   router.push("/auth/login");
 };
 
-// Menüeinträge (links)
+// Menu entries
 const menuItems = computed(() => [
   {
     label: "Home",
@@ -90,7 +88,7 @@ const menuItems = computed(() => [
 </script>
 
 <style scoped>
-/* Menüleiste */
+/* Menu bar */
 .custom-menubar {
   position: sticky;
   top: 0;
@@ -104,20 +102,20 @@ const menuItems = computed(() => [
   transition: box-shadow 0.3s ease;
 }
 
-/* Hover-Effekt für Menülinks */
+/* Hover effect */
 .p-menubar .p-menuitem-link:hover {
   background-color: #f5f5f5;
   border-radius: 4px;
 }
 
-/* Aktives Menüelement */
+/* Active element */
 .p-menubar .p-menuitem-link.p-menuitem-active {
   background-color: #e0f3ff;
   color: #007ad9;
   border-radius: 4px;
 }
 
-/* Logout-Button rechts */
+/* Logout button */
 .logout-button {
   margin-left: auto;
   display: flex;

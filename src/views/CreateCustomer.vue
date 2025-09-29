@@ -1,80 +1,92 @@
 <template>
-	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow mt-2">
 		<h2 class="text-xl font-bold mb-4">
 			{{ mode === "create" ? "Kunde anlegen" : "Kunde bearbeiten" }}
 		</h2>
 
 		<form @submit.prevent="submitCustomer" class="space-y-4">
-			<div class="flex gap-4">
-				<div class="flex-1">
+			<!-- NAME -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Vorname *</label>
 					<InputText v-model="customer.preName" class="w-full" />
 				</div>
-
-				<div class="flex-1">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Nachname *</label>
 					<InputText v-model="customer.lastName" class="w-full" />
 				</div>
 			</div>
 
+			<!-- ORGANIZATION -->
 			<div>
 				<label class="block mb-1">Unternehmen</label>
 				<InputText v-model="customer.companyName" class="w-full" />
 			</div>
 
-			<div class="flex gap-4">
-				<div class="flex-1">
+			<!-- STREET / NUMBER -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Straße *</label>
 					<InputText v-model="customer.street" class="w-full" />
 				</div>
-
-				<div class="flex-1">
+				<div class="min-w-0 sm:w-28">
 					<label class="block mb-1">Hausnummer *</label>
 					<InputNumber
 						v-model="customer.streetNumber"
-						class="w-full"
+						class="block w-full"
+						inputClass="w-full"
 					/>
 				</div>
 			</div>
 
-			<div class="flex-1">
-				<label class="block mb-1">Postleitzahl *</label>
-				<InputText v-model="customer.postcode" class="w-full" />
+			<!-- PLZ / TOWN -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="min-w-0 sm:w-40">
+					<label class="block mb-1">Postleitzahl *</label>
+					<InputText
+						v-model="customer.postcode"
+						class="w-full"
+						inputmode="numeric"
+					/>
+				</div>
+				<div class="flex-1 min-w-0">
+					<label class="block mb-1">Stadt *</label>
+					<InputText v-model="customer.town" class="w-full" />
+				</div>
 			</div>
 
-			<div>
-				<label class="block mb-1">Stadt *</label>
-				<InputText v-model="customer.town" class="w-full" />
-			</div>
-
+			<!-- COUNTRY -->
 			<div>
 				<label class="block mb-1">Land *</label>
 				<InputText v-model="customer.country" class="w-full" />
 			</div>
 
-			<div>
-				<label class="block mb-1">Kürzel *</label>
-				<InputText v-model="customer.token" class="w-full" />
+			<!-- TOKEN / PRICE -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="min-w-0 sm:w-48">
+					<label class="block mb-1">Kürzel *</label>
+					<InputText v-model="customer.token" class="w-full" />
+				</div>
+				<div class="flex-1 min-w-0">
+					<label class="block mb-1">Stundensatz (€) *</label>
+					<InputNumber
+						v-model="customer.hourlyRate"
+						class="block w-full"
+						inputClass="w-full"
+						:min="0"
+						mode="currency"
+						currency="EUR"
+					/>
+				</div>
 			</div>
 
-			<div>
-				<label class="block mb-1">Stundensatz (€) *</label>
-				<InputNumber
-					v-model="customer.hourlyRate"
-					class="w-full"
-					:min="0"
-					mode="currency"
-					currency="EUR"
-				/>
-			</div>
-
+			<!-- ERROR -->
 			<div
 				v-if="errors.length"
 				class="bg-red-50 border border-red-400 text-red-700 p-3 rounded space-y-1"
 			>
 				<div v-for="e in errors" :key="e">• {{ e }}</div>
 			</div>
-
 			<div v-if="error" class="text-red-500">{{ error }}</div>
 
 			<Button
@@ -217,10 +229,10 @@ async function submitCustomer() {
 
 	if (mode === "create") {
 		try {
-            debugger
-			await api.post("/customer",{
+			debugger;
+			await api.post("/customer", {
 				...customer.value,
-				postcode: convertToNumber(customer.value.postcode),
+				postcode: convertToNumber(customer.value.postcode)
 			});
 
 			// Reset
@@ -253,11 +265,13 @@ async function submitCustomer() {
 			loading.hide();
 		}
 	} else {
-        try {
+		try {
 			await api.patch("/customer/" + route.query.customerId, {
 				...customer.value,
 				postcode: convertToNumber(customer.value.postcode),
-                hourlyRate: convertToNumber(customer.value.hourlyRate ? customer.value.hourlyRate : '0')
+				hourlyRate: convertToNumber(
+					customer.value.hourlyRate ? customer.value.hourlyRate : "0"
+				)
 			});
 
 			// Reset
@@ -289,7 +303,7 @@ async function submitCustomer() {
 		} finally {
 			loading.hide();
 		}
-    }
+	}
 }
 
 function convertToNumber(value: string): number {

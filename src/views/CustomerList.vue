@@ -1,36 +1,108 @@
 <template>
-	<div class="p-6">
-		<h2 class="text-xl font-bold mb-4">Meine Kunden</h2>
+	<div class="mmx-auto p-6 bg-white rounded shadow mt-2 mx-2">
+		<div class="flex items-center justify-between mb-4">
+			<h2 class="text-xl font-bold">Kundenliste</h2>
+		</div>
+		<div class="min-w-0 mt-2">
+			<div
+				class="overflow-x-auto max-w-full rounded-lg bg-white shadow ring-1 ring-gray-200"
+			>
+				<DataTable
+					:value="customers"
+					:paginator="true"
+					:rows="10"
+					stripedRows
+					responsiveLayout="stack"
+					breakpoint="768px"
+					scrollable
+					scrollDirection="horizontal"
+					:tableStyle="{ width: '100%', tableLayout: 'auto' }"
+					class="w-full text-sm"
+					@row-click="goToCustomer"
+					:rowClass="() => 'cursor-pointer'"
+				>
+					<!-- NAME -->
+					<Column header="Name">
+						<template #body="{ data }">
+							<div class="font-medium">{{ name(data) }}</div>
+							<div class="text-gray-500 sm:hidden">
+								{{ data.companyName }}
+								<span v-if="data.token">
+									• {{ data.token }}</span
+								>
+							</div>
+						</template>
+					</Column>
 
-		<DataTable
-			:value="customers"
-			:paginator="true"
-			:rows="10"
-			stripedRows
-			responsiveLayout="scroll"
-            @row-click="goToCustomer"
-            :rowClass="() => 'cursor-pointer'"
-		>
-			<Column header="Name">
-				<template #body="slotProps">
-					{{ name(slotProps.data) }}
-				</template>
-			</Column>
-			<Column field="companyName" header="Unternehmen" />
-			<Column header="Adresse">
-				<template #body="slotProps">
-					{{ adress(slotProps.data) }}
-				</template>
-			</Column>
-			<Column field="token" header="Kürzel" />
-			<Column
-				field="hourlyRate"
-				header="Stundensatz"
-				:body="formatAmount"
-			/>
-		</DataTable>
+					<!-- ORGANIZATION -->
+					<Column
+						field="companyName"
+						header="Unternehmen"
+						:headerClass="'hidden sm:table-cell'"
+						:bodyClass="'hidden sm:table-cell'"
+					>
+						<template #body="{ data }">
+							<div
+								class="max-w-[240px] truncate"
+								:title="data.companyName"
+							>
+								{{ data.companyName }}
+							</div>
+						</template>
+					</Column>
+
+					<!-- ADRESS -->
+					<Column
+						header="Adresse"
+						:headerClass="'hidden sm:table-cell'"
+						:bodyClass="'hidden sm:table-cell'"
+					>
+						<template #body="{ data }">
+							{{ adress(data) }}
+						</template>
+					</Column>
+
+					<!-- TOKEN -->
+					<Column
+						field="token"
+						header="Kürzel"
+						:headerClass="'hidden sm:table-cell'"
+						:bodyClass="'hidden sm:table-cell'"
+					/>
+
+					<!-- PRICE -->
+					<Column
+						field="hourlyRate"
+						header="Stundensatz"
+						:body="formatAmount"
+						:headerClass="'hidden sm:table-cell'"
+						:bodyClass="'hidden sm:table-cell'"
+					>
+						<template #body="{ data }">
+							{{ formatAmount(data) }}
+						</template>
+					</Column>
+				</DataTable>
+			</div>
+		</div>
 	</div>
 </template>
+
+<style scoped>
+/* hübschere Labels im Stack-Layout + sichere Breiten */
+:deep(.p-column-title) {
+	font-size: 0.75rem;
+	color: #6b7280;
+	margin-right: 0.5rem;
+}
+:deep(.p-datatable) {
+	max-width: 100%;
+}
+:deep(.p-datatable-wrapper) {
+	max-width: 100%;
+	overflow-x: auto;
+}
+</style>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
@@ -66,11 +138,20 @@ function adress(row: any) {
 }
 
 function formatAmount(row: any) {
-	return row.invAmount?.toFixed(2) + " €";
+  const v = typeof row.hourlyRate === 'string'
+    ? parseFloat(row.hourlyRate.replace(',', '.'))
+    : row.hourlyRate;
+
+  if (!Number.isFinite(v)) return '';
+
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(v); // z.B. 108,12 €
 }
 
 function goToCustomer(event: any) {
-  const customerId = event.data.id;
-  router.push({ name: 'Edit Customer', query: { customerId } });
+	const customerId = event.data.id;
+	router.push({ name: "Edit Customer", query: { customerId } });
 }
 </script>

@@ -28,18 +28,15 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import axios from "axios";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
 import Button from "primevue/button";
 import { useRouter } from "vue-router";
 import { useLoadingStore } from "../stores/loading";
-import { useToastStore } from "../stores/toast";
 import { api } from "../api";
 
 const router = useRouter();
 const loading = useLoadingStore();
-const toastStore = useToastStore();
 
 const form = ref({
 	username: "",

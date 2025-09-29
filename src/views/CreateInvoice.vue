@@ -1,8 +1,9 @@
 <template>
-	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow">
+	<div class="max-w-2xl mx-auto p-6 bg-white rounded shadow mt-2">
 		<h2 class="text-xl font-bold mb-4">Rechnung erstellen</h2>
 
 		<form @submit.prevent="submitInvoice" class="space-y-4">
+			<!-- CUSTOMER -->
 			<div>
 				<label class="block mb-1">Kunde (Kürzel) *</label>
 				<Dropdown
@@ -16,13 +17,19 @@
 				/>
 			</div>
 
+			<!-- INV NUMBER -->
 			<div>
 				<label class="block mb-1">Rechnungsnummer</label>
-				<InputText v-model="invoice.invoiceNumber" class="w-full" disabled="true"/>
+				<InputText
+					v-model="invoice.invoiceNumber"
+					class="w-full"
+					disabled
+				/>
 			</div>
 
-			<div class="flex gap-4">
-				<div class="flex-1">
+			<!-- TIMERANGE -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Zeitraum Start *</label>
 					<Calendar
 						v-model="invoice.periodStart"
@@ -31,7 +38,7 @@
 						showIcon
 					/>
 				</div>
-				<div class="flex-1">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Zeitraum Ende *</label>
 					<Calendar
 						v-model="invoice.periodEnd"
@@ -42,8 +49,9 @@
 				</div>
 			</div>
 
-			<div class="flex gap-4">
-				<div class="flex-1">
+			<!-- DATA -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Rechnungsdatum *</label>
 					<Calendar
 						v-model="invoice.invDate"
@@ -52,7 +60,7 @@
 						showIcon
 					/>
 				</div>
-				<div class="flex-1">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Erstellungsdatum</label>
 					<Calendar
 						:disabled="true"
@@ -64,8 +72,9 @@
 				</div>
 			</div>
 
-			<div class="flex gap-4">
-				<div class="flex-1">
+			<!-- AMOUNTS -->
+			<div class="flex flex-col sm:flex-row gap-4">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Rechnungsbetrag (€) *</label>
 					<InputNumber
 						v-model="invoice.invAmount"
@@ -76,7 +85,7 @@
 						:min="0"
 					/>
 				</div>
-				<div class="flex-1">
+				<div class="flex-1 min-w-0">
 					<label class="block mb-1">Mehrwertsteuer (€) *</label>
 					<InputNumber
 						v-model="invoice.vatAmount"
@@ -89,21 +98,21 @@
 				</div>
 			</div>
 
+			<!-- VAT -->
 			<div>
 				<label class="block mb-1">USt.-Satz (%) *</label>
-				<div>
-					<Dropdown
-						v-model="invoice.vatKey"
-						:options="vatRates"
-						optionLabel="label"
-						optionValue="id"
-						placeholder="Steuerschlüssel auswählen"
-						class="w-full"
-						filter
-					/>
-				</div>
+				<Dropdown
+					v-model="invoice.vatKey"
+					:options="vatRates"
+					optionLabel="label"
+					optionValue="id"
+					placeholder="Steuerschlüssel auswählen"
+					class="w-full"
+					filter
+				/>
 			</div>
 
+            <!-- ERRORS -->
 			<div
 				v-if="errors.length"
 				class="bg-red-50 border border-red-400 text-red-700 p-3 rounded space-y-1"
@@ -129,7 +138,6 @@ import { useLoadingStore } from "../stores/loading";
 import type { Vat } from "../models/vat";
 import type { Invoice } from "../models/invoice";
 import { useToastStore } from "../stores/toast";
-import type { Biller } from "../models/biller";
 
 const loading = useLoadingStore();
 const toastStore = useToastStore();
@@ -142,7 +150,7 @@ const success = ref("");
 
 const invoice = ref<Invoice>({
 	customer: 0,
-	invoiceNumber: '',
+	invoiceNumber: "",
 	periodStart: new Date(),
 	periodEnd: new Date(),
 	invDate: new Date(),
@@ -200,24 +208,23 @@ async function submitInvoice() {
 		periodStart: invoice.value.periodStart.toISOString(),
 		periodEnd: invoice.value.periodEnd.toISOString(),
 		invDate: invoice.value.invDate.toISOString(),
-		createDate: invoice.value.createDate.toISOString(),
+		createDate: invoice.value.createDate.toISOString()
 	};
 
 	try {
 		await api.post("/invoice", data);
 		success.value = "Rechnung wurde erfolgreich erstellt.";
 
-		// Optional: Formular zurücksetzen
 		invoice.value = {
-			customer: null,
+			customer: 0,
 			invoiceNumber: "",
-			periodStart: null,
-			periodEnd: null,
+			periodStart: new Date(),
+			periodEnd: new Date(),
 			invDate: new Date(),
 			createDate: new Date(),
-			invAmount: null,
-			vatAmount: null,
-			vatKey: null
+			invAmount: 0,
+			vatAmount: 0,
+			vatKey: 0
 		};
 		toastStore.showToast(
 			"Rechnung erfolgreich erstellt",
@@ -289,7 +296,7 @@ async function loadBiller() {
 onMounted(() => {
 	loadCustomers();
 	loadVatRates();
-    loadBiller();
+	loadBiller();
 });
 
 watch(

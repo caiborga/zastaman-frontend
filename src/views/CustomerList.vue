@@ -1,5 +1,5 @@
 <template>
-	<div class="mmx-auto p-6 bg-white rounded shadow mt-2 mx-2">
+	<div class="p-6 bg-white rounded shadow mt-2 mx-2">
 		<div class="flex items-center justify-between mb-4">
 			<h2 class="text-xl font-bold">Kundenliste</h2>
 		</div>
@@ -130,7 +130,7 @@ onMounted(async () => {
 });
 
 function name(row: any) {
-	return row.biller ? `${row.preName} ${row.lastName}` : "-";
+	return row.biller ? `${row.lastName}, ${row.preName}` : "-";
 }
 
 function adress(row: any) {

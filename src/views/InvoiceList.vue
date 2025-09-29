@@ -1,5 +1,5 @@
 <template>
-	<div class="mx-auto p-6 bg-white rounded shadow mt-2 mx-2">
+	<div class="p-6 bg-white rounded shadow mt-2 mx-2">
 		<div class="flex items-center justify-between mb-4">
 			<h2 class="text-xl font-bold">Rechnungen</h2>
 		</div>

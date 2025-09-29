@@ -193,9 +193,9 @@ function validate() {
 	) {
 		errors.value.push("Hausnummer ist erforderlich und muss positiv sein.");
 	}
-	if (!customer.value.postcode.trim()) {
+	if (!customer.value.postcode) {
 		errors.value.push("Postleitzahl ist erforderlich.");
-	} else if (!/^\d{5}$/.test(customer.value.postcode.trim())) {
+	} else if (!/^\d{5}$/.test(customer.value.postcode)) {
 		errors.value.push("Postleitzahl muss 5 Ziffern enthalten.");
 	}
 	if (!customer.value.town?.trim()) {

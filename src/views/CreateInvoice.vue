@@ -248,7 +248,7 @@ async function loadCustomers() {
 		const res = await api.get("/customer");
 		customers.value = res.data.map((c: any) => ({
 			id: c.id,
-			label: `${c.companyName} - ${c?.preName || ""} ${c?.lastName || ""}`
+			label: `${c?.lastName || ""}, ${c?.preName || ""} - ${c.companyName}`
 		}));
 	} catch (err) {
 		console.error("Fehler beim Laden der Kunden:", err);

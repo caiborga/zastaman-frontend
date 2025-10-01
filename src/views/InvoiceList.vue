@@ -94,7 +94,6 @@
 								}}
 							</div>
 							<div class="text-gray-500 sm:hidden">
-								MwSt:
 								{{
 									new Intl.NumberFormat("de-DE", {
 										style: "currency",
@@ -132,8 +131,7 @@
 					<!-- ACTIONS -->
 					<Column
 						header="Aktionen"
-						:headerClass="'hidden sm:table-cell'"
-						:bodyClass="'hidden sm:table-cell'"
+						
 					>
 						<template #body="{ data }">
 							<Button

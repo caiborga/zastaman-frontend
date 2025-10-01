@@ -93,7 +93,7 @@
 				</template>
 				<template #content>
 					<p class="m-0 text-2xl sm:text-3xl leading-tight">
-						{{ dashboardData.count }}
+						{{ dashboardData.count || 0 }}
 					</p>
 				</template>
 			</Card>
